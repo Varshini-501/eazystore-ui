@@ -12,12 +12,12 @@ export default function Footer() {
       />
       by
       <a
-        href="https://eazybytes.com/"
+        href="https://eazybytes.com1/"
         target="_blank"
         rel="noreferrer"
         className="text-primary dark:text-light font-semibold px-1 transition-colors duration-300 hover:text-dark dark:hover:text-lighter"
       >
-        eazybytes
+        VKart
       </a>
     </footer>
   );
