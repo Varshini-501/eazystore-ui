@@ -1,70 +1,72 @@
 import React from "react";
+
 import PageTitle from "./PageTitle";
 
 export default function About() {
-  const h3Style = "text-lg font-semibold text-primary dark:text-light mb-2";
+  const h3Style =
+    "text-lg font-semibold text-primary dark:text-light mb-2";
+
   const pStyle = "text-gray-600 dark:text-lighter";
 
   return (
     <div className="max-w-[1152px] min-h-[852px] mx-auto px-6 py-8 font-primary">
       <PageTitle title="About Us" />
-      {/* About Us Content */}
+
+      {/* About VKART Content */}
       <p className="leading-6 mb-8 text-gray-600 dark:text-lighter">
         <span className="text-lg font-semibold text-primary dark:text-light">
-          eazy sticker
+          VKART
         </span>{" "}
-        store is an initiative by{" "}
-        <span className="text-lg font-semibold text-primary dark:text-light">
-          Designs by eazybytes
-        </span>
-        , dedicated to offering you the most sought-after stickers and posters!
+        is a modern online shopping platform designed to make discovering,
+        exploring, and purchasing products simple and convenient. Our goal is
+        to provide customers with a smooth shopping experience while bringing
+        a variety of products together in one place.
       </p>
 
       {/* Why Choose Us Section */}
       <h2 className="text-2xl leading-[32px] font-bold text-primary dark:text-light mb-6">
-        Why Choose Us?
+        Why Choose VKART?
       </h2>
 
       {/* Features */}
       <div className="space-y-8">
-        {/* Feature: Premium Quality */}
+        {/* Feature: Quality Products */}
         <div>
-          <h3 className={h3Style}>Premium Quality</h3>
+          <h3 className={h3Style}>Quality Products</h3>
           <p className={pStyle}>
-            We strive to provide every customer with the utmost satisfaction by
-            delivering high-quality vinyl stickers crafted with care and
-            precision.
+            We aim to offer products that provide great value and meet the
+            expectations of our customers. Every product is presented with
+            clear information to help you make confident purchasing decisions.
           </p>
         </div>
 
-        {/* Feature: Product Innovation */}
+        {/* Feature: Easy Shopping */}
         <div>
-          <h3 className={h3Style}>Product Innovation</h3>
+          <h3 className={h3Style}>Easy Shopping Experience</h3>
           <p className={pStyle}>
-            Our vinyl stickers feature a premium matte or glossy finish
-            lamination and are made with advanced adhesive technology. Designed
-            to withstand all weather conditions and resist scratches, our
-            stickers are gentle enough to preserve the surface of your beloved
-            gadgets.
+            VKART is designed with simplicity in mind. From browsing products
+            and adding items to your cart to checkout and payment, every step
+            is designed to be convenient and easy to use.
           </p>
         </div>
 
-        {/* Feature: Excellent Service */}
+        {/* Feature: Secure & Reliable */}
         <div>
-          <h3 className={h3Style}>Excellent Service</h3>
+          <h3 className={h3Style}>Secure & Reliable</h3>
           <p className={pStyle}>
-            Customer satisfaction is our top priority, and we’re committed to
-            delivering an exceptional shopping experience.
+            We focus on providing a reliable shopping experience with secure
+            authentication, protected customer information, and a smooth
+            order and payment process.
           </p>
         </div>
 
-        {/* Feature: Designs You’ll Love */}
+        {/* Feature: Customer First */}
         <div>
-          <h3 className={h3Style}>Designs You’ll Love</h3>
+          <h3 className={h3Style}>Customer First</h3>
           <p className={pStyle}>
-            With over 1,000 designs, our collection ranges from relatable and
-            seriously funny to delightfully quirky. And we’re just getting
-            started—stay tuned for more exciting products and designs!
+            Customer satisfaction is at the heart of VKART. We strive to make
+            shopping straightforward, enjoyable, and accessible while
+            continuously improving the experience.
           </p>
         </div>
       </div>
