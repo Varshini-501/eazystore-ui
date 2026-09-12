@@ -18,16 +18,28 @@ export default function Login() {
   const isSubmitting = navigation.state === "submitting";
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const from = sessionStorage.getItem("redirectPath") || "/home";
 
   useEffect(() => {
     if (actionData?.success) {
       dispatch(
-        loginSuccess({ jwtToken: actionData.jwtToken, user: actionData.user })
+        loginSuccess({
+          jwtToken: actionData.jwtToken,
+          user: actionData.user,
+        })
       );
+
+      const redirectPath = sessionStorage.getItem("redirectPath");
+
+      const destination =
+        redirectPath ||
+        (actionData.user?.roles?.includes("ROLE_VENDOR")
+          ? "/vendor/dashboard"
+          : "/home");
+
       sessionStorage.removeItem("redirectPath");
+
       setTimeout(() => {
-        navigate(from);
+        navigate(destination);
       }, 100);
     } else if (actionData?.errors) {
       toast.error(actionData.errors.message || "Login failed.");
@@ -36,13 +48,16 @@ export default function Login() {
 
   const labelStyle =
     "block text-lg font-semibold text-primary dark:text-light mb-2";
+
   const textFieldStyle =
     "w-full px-4 py-2 text-base border rounded-md transition border-primary dark:border-light focus:ring focus:ring-dark dark:focus:ring-lighter focus:outline-none text-gray-800 dark:text-lighter bg-white dark:bg-gray-600 placeholder-gray-400 dark:placeholder-gray-300";
+
   return (
     <div className="min-h-[852px] flex items-center justify-center font-primary dark:bg-darkbg">
       <div className="bg-white dark:bg-gray-700 shadow-md rounded-lg max-w-md w-full px-8 py-6">
         {/* Title */}
         <PageTitle title="Login" />
+
         {/* Form */}
         <Form method="POST" className="space-y-6">
           {/* Email Field */}
@@ -50,6 +65,7 @@ export default function Login() {
             <label htmlFor="username" className={labelStyle}>
               Username
             </label>
+
             <input
               id="username"
               type="text"
@@ -66,6 +82,7 @@ export default function Login() {
             <label htmlFor="password" className={labelStyle}>
               Password
             </label>
+
             <input
               id="password"
               type="password"
@@ -116,20 +133,32 @@ export async function loginAction({ request }) {
 
   try {
     const response = await apiClient.post("/auth/login", loginData);
+
     const { message, user, jwtToken } = response.data;
-    return { success: true, message, user, jwtToken };
+
+    return {
+      success: true,
+      message,
+      user,
+      jwtToken,
+    };
   } catch (error) {
     if (error.response?.status === 401) {
       return {
         success: false,
-        errors: { message: "Invalid username or password" },
+        errors: {
+          message: "Invalid username or password",
+        },
       };
     }
+
     throw new Response(
       error.response?.data?.message ||
         error.message ||
         "Failed to login. Please try again.",
-      { status: error.response?.status || 500 }
+      {
+        status: error.response?.status || 500,
+      }
     );
   }
 }
