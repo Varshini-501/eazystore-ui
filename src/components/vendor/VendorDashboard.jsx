@@ -5,7 +5,7 @@ import apiClient from "../../api/apiClient";
 import { toast } from "react-toastify";
 
 export default function VendorDashboard() {
-  const { profile, myPosts } = useLoaderData();
+  const { profile, myPosts, myProducts } = useLoaderData();
   const revalidator = useRevalidator();
 
   const [file, setFile] = useState(null);
@@ -14,7 +14,9 @@ export default function VendorDashboard() {
 
   const [postContent, setPostContent] = useState("");
   const [postImageUrl, setPostImageUrl] = useState("");
+  const [linkedProductId, setLinkedProductId] = useState(null);
   const [posting, setPosting] = useState(false);
+  const [generatingProductId, setGeneratingProductId] = useState(null);
 
   const labelStyle =
     "block text-lg font-semibold text-primary dark:text-light mb-2";
@@ -54,6 +56,24 @@ export default function VendorDashboard() {
     }
   };
 
+  const handleGeneratePromo = async (product) => {
+    setGeneratingProductId(product.productId);
+    try {
+      const response = await apiClient.post(
+        `/vendor/products/${product.productId}/generate-promo`
+      );
+      setPostContent(response.data.promoText);
+      setLinkedProductId(product.productId);
+      toast.success("AI promo generated — review it below and publish!");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.error || "Failed to generate promo text."
+      );
+    } finally {
+      setGeneratingProductId(null);
+    }
+  };
+
   const handleCreatePost = async (event) => {
     event.preventDefault();
     if (!postContent.trim()) {
@@ -65,10 +85,12 @@ export default function VendorDashboard() {
       await apiClient.post("/social/posts", {
         content: postContent,
         imageUrl: postImageUrl || null,
+        productId: linkedProductId || null,
       });
       toast.success("Post published to your followers!");
       setPostContent("");
       setPostImageUrl("");
+      setLinkedProductId(null);
       revalidator.revalidate();
     } catch (error) {
       toast.error(error.response?.data?.error || "Failed to publish post.");
@@ -161,11 +183,73 @@ export default function VendorDashboard() {
         )}
       </div>
 
+      {/* Your Products */}
+      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-700 shadow-md rounded-lg px-8 py-6">
+        <h2 className="text-2xl font-bold text-primary dark:text-light mb-4">
+          Your Products
+        </h2>
+        {myProducts.length === 0 ? (
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            No products yet — upload some above to get started.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {myProducts.map((product) => (
+              <div
+                key={product.productId}
+                className="flex items-center justify-between border border-gray-200 dark:border-gray-600 rounded-md p-3"
+              >
+                <div className="flex items-center min-w-0">
+                  {product.imageUrl && (
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-12 h-12 object-cover rounded-md mr-3 shrink-0"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-800 dark:text-gray-200 truncate">
+                      {product.name}
+                    </p>
+                    <p className="text-sm text-gray-500">₹{product.price}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleGeneratePromo(product)}
+                  disabled={generatingProductId === product.productId}
+                  className="ml-4 shrink-0 px-4 py-2 text-sm rounded-md transition duration-200 bg-primary dark:bg-light text-white dark:text-black hover:bg-dark dark:hover:bg-lighter disabled:opacity-60"
+                >
+                  {generatingProductId === product.productId
+                    ? "Generating..."
+                    : "✨ Generate AI Promo"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Create a promo post */}
       <div className="max-w-2xl mx-auto bg-white dark:bg-gray-700 shadow-md rounded-lg px-8 py-6">
         <h2 className="text-2xl font-bold text-primary dark:text-light mb-4">
           Share an Update with Your Followers
         </h2>
+        {linkedProductId && (
+          <div className="flex items-center justify-between bg-primary/10 dark:bg-light/10 text-primary dark:text-light text-sm rounded-md px-3 py-2 mb-4">
+            <span>
+              Linked to:{" "}
+              {myProducts.find((p) => p.productId === linkedProductId)
+                ?.name || "product"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setLinkedProductId(null)}
+              className="ml-3 underline"
+            >
+              Unlink
+            </button>
+          </div>
+        )}
         <form onSubmit={handleCreatePost} className="space-y-4">
           <div>
             <label className={labelStyle}>What's new?</label>
@@ -244,11 +328,16 @@ export default function VendorDashboard() {
 
 export async function vendorDashboardLoader() {
   try {
-    const [profileRes, myPostsRes] = await Promise.all([
+    const [profileRes, myPostsRes, myProductsRes] = await Promise.all([
       apiClient.get("/vendor/profile"),
       apiClient.get("/social/posts/mine"),
+      apiClient.get("/vendor/products"),
     ]);
-    return { profile: profileRes.data, myPosts: myPostsRes.data };
+    return {
+      profile: profileRes.data,
+      myPosts: myPostsRes.data,
+      myProducts: myProductsRes.data,
+    };
   } catch (error) {
     throw new Response(
       error.response?.data?.errorMessage ||
