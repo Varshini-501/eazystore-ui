@@ -257,6 +257,15 @@ export default function Header() {
                                     Messages
                                   </Link>
                                 </li>
+
+                                <li>
+                                  <Link
+                                    to="/admin/price-offers"
+                                    className={dropdownLinkClass}
+                                  >
+                                    Price Offers
+                                  </Link>
+                                </li>
                               </ul>
                             )}
                           </li>
@@ -486,6 +495,14 @@ export default function Header() {
                                   className={dropdownLinkClass}
                                 >
                                   Messages
+                                </Link>
+
+                                <Link
+                                  to="/admin/price-offers"
+                                  onClick={closeMobileMenu}
+                                  className={dropdownLinkClass}
+                                >
+                                  Price Offers
                                 </Link>
                               </div>
                             )}
