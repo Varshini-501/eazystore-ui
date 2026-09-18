@@ -111,7 +111,7 @@ export default function Header() {
         >
           <FontAwesomeIcon icon={faTags} className="h-7 w-7 sm:h-8 sm:w-8" />
           <span className="font-bold whitespace-nowrap">
-            Eazy Stickers
+            VKart
           </span>
         </Link>
 
